@@ -8,7 +8,7 @@ def read_input():
     gnuOptions = "file="
 
     try:
-        arguments, values = getopt.getopt(argumentList, unixOptions, gnuOptions)
+        arguments, _ = getopt.getopt(argumentList, unixOptions, gnuOptions)
     except getopt.error as err:
         print(str(err))
         sys.exit(2)
@@ -32,7 +32,7 @@ def part1(lines):
     sum = 0
     for l in lines:
         sum += calc_fuel(int(l))
-    return sum
+    return ("Part 1", sum)
 
 def part2(lines):
     sum = 0
@@ -45,7 +45,7 @@ def part2(lines):
                 mass = result
             else:
                 break
-    return sum
+    return ("Part 2", sum)
 
 raw_input = read_input()
 print(part1(raw_input.strip().split('\n')))

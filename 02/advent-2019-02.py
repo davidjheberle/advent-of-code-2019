@@ -7,7 +7,7 @@ def read_input():
     gnuOptions = "file="
 
     try:
-        arguments, values = getopt.getopt(argumentList, unixOptions, gnuOptions)
+        arguments, _ = getopt.getopt(argumentList, unixOptions, gnuOptions)
     except getopt.error as err:
         print(str(err))
         sys.exit(2)
@@ -23,35 +23,42 @@ def read_input():
     file.close()
     return raw_input
 
-def intcode(positions):
-    param, ptr, skip = {}, 0, (4, 4)
-    while positions[ptr] is not 99:
-        for i in range(1, 4): param[i] = positions[ptr + i]
-        opcode = positions[ptr] % 100
-        if opcode is 1: positions[param[3]] = positions[param[1]] + positions[param[2]]
-        elif opcode is 2: positions[param[3]] = positions[param[1]] * positions[param[2]]
-        ptr += skip[opcode - 1]
-    return positions
+def get_program(raw_input):
+    return list(map(int, raw_input.split(',')))
 
-def part1(input):
-    print("Input: %s" % input)
-    positions = list(map(int, input.split(',')))
-    positions[1] = 12
-    positions[2] = 2
-    return intcode(positions)[0]
+def get_params(program, ptr, num):
+    params = {}
+    for i in range(1, num + 1):
+        params[i] = program[ptr + i]
+    return params
 
-def part2(input):
-    print("Input: %s" % input)
-    original_positions = list(map(int, input.split(',')))
+def intcode(program, program_input=[], ptr=0):
+    output, params, num_params = 0, {}, (3, 3)
+    while program[ptr] != 99:
+        opcode = program[ptr] % 100
+        params = get_params(program, ptr, num_params[opcode - 1])
+        if opcode == 1: program[params[3]] = program[params[1]] + program[params[2]]
+        elif opcode == 2: program[params[3]] = program[params[1]] * program[params[2]]
+        ptr += num_params[opcode - 1] + 1
+    return output
 
+def part1(raw_input):
+    program = get_program(raw_input)
+    program[1] = 12
+    program[2] = 2
+    intcode(program)
+    return ("Part 1", program[0])
+
+def part2(raw_input):
+    original_program = get_program(raw_input)
     for noun in range(0, 100):
         for verb in range(0, 100):
-            positions = original_positions.copy()
-            positions[1] = noun
-            positions[2] = verb
-            positions = intcode(positions)
-            if positions[0] == 19690720:
-                return 100 * noun + verb
+            program = original_program.copy()
+            program[1] = noun
+            program[2] = verb
+            intcode(program)
+            if program[0] == 19690720:
+                return ("Part 2", 100 * noun + verb)
 
 raw_input = read_input()
 print(part1(raw_input))

@@ -6,7 +6,7 @@ unixOptions = "f:"
 gnuOptions = "file="
 
 try:
-    arguments, values = getopt.getopt(argumentList, unixOptions, gnuOptions)
+    arguments, _ = getopt.getopt(argumentList, unixOptions, gnuOptions)
 except getopt.error as err:
     print(str(err))
     sys.exit(2)
@@ -47,6 +47,6 @@ def solutions(raw_input):
 
     closest = min([intersection for intersection in intersections], key=lambda x: abs(x[0]) + abs(x[1]))
     distance = abs(closest[0]) + abs(closest[1])
-    return ('Distance: ', distance, 'Steps: ', steps)
+    return ("Part 1", distance, "Part 2", steps)
 
 print(solutions(raw_input))

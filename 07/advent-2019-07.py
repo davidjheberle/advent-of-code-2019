@@ -1,4 +1,5 @@
 import getopt, sys
+import itertools
 
 def read_input():
     fullCmdArguments = sys.argv
@@ -50,16 +51,37 @@ def intcode(program, program_input=[], ptr=0):
 
 def part1(raw_input):
     program = get_program(raw_input)
-    program_input, ptr, output, last_output = [1], 0, None, None
-    while ptr is not None:
-        last_output = output
-        output, ptr = intcode(program, program_input, ptr)
-        print((output, ptr))
-    return ("Part 1", last_output)
+    phase_permutations = itertools.permutations(range(5), 5)
+    outputs = []
+    for phase_settings in phase_permutations:
+        num_amplifiers = len(phase_settings)
+        inputs, output = [], 0
+        for i in range(num_amplifiers):
+            inputs.append([phase_settings[i], output])
+            output, _ = intcode(program.copy(), inputs[i])
+        outputs.append(output)
+        print((phase_settings, output))
+    return ("Part 1", max(outputs))
 
 def part2(raw_input):
     program = get_program(raw_input)
-    return ("Part 2", intcode(program, [5])[0])
+    phase_permutations = itertools.permutations(range(5, 10), 5)
+    outputs = []
+    for phase_settings in phase_permutations:
+        programs, ptrs, inputs, output = [], [], [], 0
+        num_amplifiers = len(phase_settings)
+        for i in range(num_amplifiers):
+            programs.append(program.copy())
+            ptrs.append(0)
+            inputs.append([phase_settings[i]])            
+        while ptrs[0] is not None:
+            for i in range(num_amplifiers):
+                inputs[i].append(output)
+                output, ptr = intcode(programs[i], inputs[i], ptrs[i])
+                ptrs[i] = ptr
+        print((phase_settings, inputs[0][0]))
+        outputs.append(inputs[0][0])
+    return ("Part 2", max(outputs))
 
 raw_input = read_input()
 print(part1(raw_input))

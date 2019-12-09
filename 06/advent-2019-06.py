@@ -7,7 +7,7 @@ def read_input():
     gnuOptions = "file="
 
     try:
-        arguments, values = getopt.getopt(argumentList, unixOptions, gnuOptions)
+        arguments, _ = getopt.getopt(argumentList, unixOptions, gnuOptions)
     except getopt.error as err:
         print(str(err))
         sys.exit(2)
@@ -48,14 +48,14 @@ def part1(input):
         while body != 'COM':
             body = orbit_map[body]
             count += 1
-    return count
+    return ("Part 1", count)
 
 def part2(input):
     orbit_map = map_orbits(raw_input.strip().split('\n'))
     orbit_you = get_orbit('YOU', orbit_map)
     orbit_san = get_orbit('SAN', orbit_map)
     orbit_common = intersection(orbit_you, orbit_san)
-    return len(orbit_you) + len(orbit_san) - 2 * len(orbit_common)
+    return ("Part 2", len(orbit_you) + len(orbit_san) - 2 * len(orbit_common))
 
 raw_input = read_input() 
 print(part1(raw_input))

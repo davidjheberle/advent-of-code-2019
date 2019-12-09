@@ -48,6 +48,6 @@ def solutions(raw_input):
 
     p1_results, valid_passwords = part1(start, end)
     p2_results = part2(valid_passwords)
-    return ('Number valid 1: ', p1_results, 'Number valid 2: ', p2_results)
+    return ("Part 1", p1_results, "Part 2", p2_results)
 
 print(solutions(raw_input))
