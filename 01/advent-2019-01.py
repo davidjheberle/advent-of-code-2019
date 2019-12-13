@@ -29,12 +29,14 @@ def calc_fuel(mass):
     return result
 
 def part1(lines):
+    print("Part 1")
     sum = 0
     for l in lines:
         sum += calc_fuel(int(l))
-    return ("Part 1", sum)
+    return sum
 
 def part2(lines):
+    print("Part 2")
     sum = 0
     for l in lines:
         mass = int(l)
@@ -45,7 +47,7 @@ def part2(lines):
                 mass = result
             else:
                 break
-    return ("Part 2", sum)
+    return sum
 
 raw_input = read_input()
 print(part1(raw_input.strip().split('\n')))

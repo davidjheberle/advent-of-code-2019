@@ -43,13 +43,15 @@ def intcode(program, program_input=[], ptr=0):
     return output
 
 def part1(raw_input):
+    print("Part 1")
     program = get_program(raw_input)
     program[1] = 12
     program[2] = 2
     intcode(program)
-    return ("Part 1", program[0])
+    return program[0]
 
 def part2(raw_input):
+    print("Part 2")
     original_program = get_program(raw_input)
     for noun in range(0, 100):
         for verb in range(0, 100):
@@ -58,7 +60,7 @@ def part2(raw_input):
             program[2] = verb
             intcode(program)
             if program[0] == 19690720:
-                return ("Part 2", 100 * noun + verb)
+                return 100 * noun + verb
 
 raw_input = read_input()
 print(part1(raw_input))

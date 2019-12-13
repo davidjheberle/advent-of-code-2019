@@ -66,20 +66,22 @@ def intcode(program, program_input=[], ptr=0, rel_base=0):
     return output, None, None
 
 def part1(raw_input):
+    print("Part 1")
     program = get_program(raw_input)
-    ptr, rel_base, inputs = 0, 0, [1]
+    ptr, rel_base, inputs, outputs = 0, 0, [1], []
     while ptr is not None:
         output, ptr, rel_base = intcode(program, inputs, ptr, rel_base)
-        print(("Output", output))
-    return ("Part 1", output)
+        outputs.append(output)
+    return outputs[0]
 
 def part2(raw_input):
+    print("Part 2")
     program = get_program(raw_input)
-    ptr, rel_base, inputs = 0, 0, [2]
+    ptr, rel_base, inputs, outputs = 0, 0, [2], []
     while ptr is not None:
         output, ptr, rel_base = intcode(program, inputs, ptr, rel_base)
-        print(("Output", output))
-    return ("Part 2", output)
+        outputs.append(output)
+    return outputs[0]
 
 raw_input = read_input()
 print(part1(raw_input))

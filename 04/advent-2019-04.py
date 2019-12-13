@@ -26,6 +26,7 @@ def more_than_two_adjacent(num):
     return 2 in adjacent_digits.values()
 
 def part1(start, end):
+    print("Part 1")
     valid_passwords = []
     for password in range(start, end + 1):
         digits = [int(i) for i in str(password)]
@@ -35,19 +36,18 @@ def part1(start, end):
     return len(valid_passwords), valid_passwords
 
 def part2(passwords):
+    print("Part 2")
     valid_passwords = []
     for password in passwords:
         if more_than_two_adjacent(password):
             valid_passwords.append(password)
     return len(valid_passwords)
 
-def solutions(raw_input):
-    input_range = raw_input.split('-')
-    print(input_range) 
-    start, end = int(input_range[0]), int(input_range[1])
 
-    p1_results, valid_passwords = part1(start, end)
-    p2_results = part2(valid_passwords)
-    return ("Part 1", p1_results, "Part 2", p2_results)
+input_range = raw_input.split('-')
+print(input_range) 
+start, end = int(input_range[0]), int(input_range[1])
 
-print(solutions(raw_input))
+p1_results, valid_passwords = part1(start, end)
+print(p1_results)
+print(part2(valid_passwords))

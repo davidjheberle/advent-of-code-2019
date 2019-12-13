@@ -49,17 +49,19 @@ def intcode(program, program_input=[], ptr=0):
     return output, None
 
 def part1(raw_input):
+    print("Part 1")
     program = get_program(raw_input)
     program_input, ptr, output, last_output = [1], 0, None, None
     while ptr is not None:
         last_output = output
         output, ptr = intcode(program, program_input, ptr)
         print((output, ptr))
-    return ("Part 1", last_output)
+    return last_output
 
 def part2(raw_input):
+    print("Part 2")
     program = get_program(raw_input)
-    return ("Part 2", intcode(program, [5])[0])
+    return intcode(program, [5])[0]
 
 raw_input = read_input()
 print(part1(raw_input))

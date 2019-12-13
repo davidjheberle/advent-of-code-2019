@@ -22,7 +22,6 @@ raw_input = file.read()
 file.close()
 
 def traverse_wire(wire):
-    print(wire)
     directions = {'D': [0, -1], 'U': [0, 1], 'L': [-1, 0], 'R': [1, 0]}
     wire_info = {}
     x, y, count = 0, 0, 0
@@ -35,18 +34,25 @@ def traverse_wire(wire):
             wire_info[(x, y)] = count
     return wire_info
 
-def solutions(raw_input):
-    wires = [x.split(',') for x in raw_input.strip().split('\n')]
-    wire_one = traverse_wire(wires[0])
-    wire_two = traverse_wire(wires[1])
+def get_wires(raw_input):
+    return [traverse_wire(x.split(',')) for x in raw_input.strip().split('\n')]
 
-    intersections = wire_one.keys() & wire_two.keys()
+def get_intersections(wires):
+    return wires[0].keys() & wires[1].keys()
 
-    fewest_steps = min(intersections, key=lambda x: wire_one[x] + wire_two[x])
-    steps = wire_one[fewest_steps] + wire_two[fewest_steps]
-
+def part1(intersections):
+    print("Part 1")
     closest = min([intersection for intersection in intersections], key=lambda x: abs(x[0]) + abs(x[1]))
     distance = abs(closest[0]) + abs(closest[1])
-    return ("Part 1", distance, "Part 2", steps)
+    return distance
 
-print(solutions(raw_input))
+def part2(intersections, wires):
+    print("Part 2")
+    fewest_steps = min(intersections, key=lambda x: wires[0][x] + wires[1][x])
+    steps = wires[0][fewest_steps] + wires[1][fewest_steps]
+    return steps
+
+wires = get_wires(raw_input)
+intersections = get_intersections(wires)
+print(part1(intersections))
+print(part2(intersections, wires))

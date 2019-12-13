@@ -50,6 +50,7 @@ def intcode(program, program_input=[], ptr=0):
     return output, None
 
 def part1(raw_input):
+    print("Part 1")
     program = get_program(raw_input)
     phase_permutations = itertools.permutations(range(5), 5)
     outputs = []
@@ -61,9 +62,10 @@ def part1(raw_input):
             output, _ = intcode(program.copy(), inputs[i])
         outputs.append(output)
         print((phase_settings, output))
-    return ("Part 1", max(outputs))
+    return max(outputs)
 
 def part2(raw_input):
+    print("Part 2")
     program = get_program(raw_input)
     phase_permutations = itertools.permutations(range(5, 10), 5)
     outputs = []
@@ -81,7 +83,7 @@ def part2(raw_input):
                 ptrs[i] = ptr
         print((phase_settings, inputs[0][0]))
         outputs.append(inputs[0][0])
-    return ("Part 2", max(outputs))
+    return max(outputs)
 
 raw_input = read_input()
 print(part1(raw_input))

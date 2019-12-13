@@ -39,6 +39,7 @@ def get_layer_count(layer, count_value):
     return count
 
 def part1(raw_input):
+    print("Part 1")
     encoded_list = list(map(int, raw_input.strip()))
     layers, min_zero, min_layer = [], None, None
     while len(encoded_list) > 0:
@@ -48,11 +49,11 @@ def part1(raw_input):
         if min_zero is None or zero_count < min_zero:
             min_layer = layer
             min_zero = zero_count
-    print(min_layer)
     get_layer_count(min_layer, 0)
-    return ("Part 1", get_layer_count(min_layer, 1) * get_layer_count(min_layer, 2))
+    return get_layer_count(min_layer, 1) * get_layer_count(min_layer, 2)
 
 def part2(raw_input):
+    print("Part 2")
     encoded_list = list(map(int, raw_input.strip()))
     layers = []
     while len(encoded_list) > 0:
@@ -69,8 +70,7 @@ def part2(raw_input):
             else:
                 result = result + str(pixel)
         result = result + '\n'
-    print(result)
-    return ("Part 2", result)
+    return result
 
 
 raw_input = read_input()

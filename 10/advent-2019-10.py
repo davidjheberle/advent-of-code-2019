@@ -37,16 +37,18 @@ def visible(asteroids, a):
     return len(set(angle(a, b) for b in asteroids if a != b))
 
 def part1(asteroids):
-    return ("Part 1", max(visible(asteroids, a) for a in asteroids))
+    print("Part 1")
+    return max(visible(asteroids, a) for a in asteroids)
 
 def part2(asteroids):
+    print("Part 2")
     a = max(asteroids, key=lambda a: visible(asteroids, a))
     asteroids.remove(a)
     asteroids.sort(key=lambda b: hypot(b[0] - a[0], b[1] - a[1]))
     ranks = {b : sum(angle(a, b) == angle(a, c) for c in asteroids[:i])
         for i, b in enumerate(asteroids)}
     x, y = sorted(asteroids, key=lambda b: (ranks[b], angle(a, b)))[199]
-    return ("Part 2", x * 100 + y)
+    return x * 100 + y
 
 asteroids = get_asteroid_map(read_input())
 print(part1(asteroids))

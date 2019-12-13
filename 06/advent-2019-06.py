@@ -41,6 +41,7 @@ def get_orbit(body, orbit_map):
     return orbit
 
 def part1(input):
+    print("Part 1")
     orbit_map = map_orbits(raw_input.strip().split('\n'))
     count = 0
     for orbit in orbit_map.keys():
@@ -48,14 +49,15 @@ def part1(input):
         while body != 'COM':
             body = orbit_map[body]
             count += 1
-    return ("Part 1", count)
+    return count
 
 def part2(input):
+    print("Part 2")
     orbit_map = map_orbits(raw_input.strip().split('\n'))
     orbit_you = get_orbit('YOU', orbit_map)
     orbit_san = get_orbit('SAN', orbit_map)
     orbit_common = intersection(orbit_you, orbit_san)
-    return ("Part 2", len(orbit_you) + len(orbit_san) - 2 * len(orbit_common))
+    return len(orbit_you) + len(orbit_san) - 2 * len(orbit_common)
 
 raw_input = read_input() 
 print(part1(raw_input))
