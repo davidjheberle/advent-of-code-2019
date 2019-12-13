@@ -86,6 +86,20 @@ def turn(input, index, directions):
         index = 0
     return index, directions[index]
 
+def hull_painting_robot(program, start_color):
+    canvas, position, directions, direction_index = {}, (0, 0), [(0, 1), (1, 0), (0, -1), (-1, 0)], 0
+    canvas[position] = start_color
+    ptr, rel_base, inputs, = 0, 0, []
+    while ptr is not None:
+        inputs.append(read_panel(position, canvas))
+        output, ptr, rel_base = intcode(program, inputs, ptr, rel_base)
+        paint_panel(output, position, canvas)
+        if ptr is None: break
+        output, ptr, rel_base = intcode(program, inputs, ptr, rel_base)
+        direction_index, _ = turn(output, direction_index, directions)
+        position = (position[0] + directions[direction_index][0], position[1] + directions[direction_index][1])
+    return canvas
+
 def print_canvas(canvas):
     canvas_array = []
     x_min, x_max, y_min, y_max = None, None, None, None
@@ -114,41 +128,12 @@ def print_canvas(canvas):
 
 def part1(raw_input):
     print("Part 1")
-    canvas = {}
-    position = (0, 0)
-    canvas[position] = '.'
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    direction_index = 0
-    program = get_program(raw_input)
-    ptr, rel_base, inputs, = 0, 0, []
-    while ptr is not None:
-        inputs.append(read_panel(position, canvas))
-        output, ptr, rel_base = intcode(program, inputs, ptr, rel_base)
-        paint_panel(output, position, canvas)
-        if ptr is None: break
-        output, ptr, rel_base = intcode(program, inputs, ptr, rel_base)
-        direction_index, _ = turn(output, direction_index, directions)
-        position = (position[0] + directions[direction_index][0], position[1] + directions[direction_index][1])
+    canvas = hull_painting_robot(get_program(raw_input), '.')
     return len(canvas)
 
 def part2(raw_input):
     print("Part 2")
-    canvas = {}
-    position = (0, 0)
-    canvas[position] = '#'
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    direction_index = 0
-    program = get_program(raw_input)
-    ptr, rel_base, inputs, = 0, 0, []
-    while ptr is not None:
-        inputs.append(read_panel(position, canvas))
-        output, ptr, rel_base = intcode(program, inputs, ptr, rel_base)
-        paint_panel(output, position, canvas)
-        if ptr is None: break
-        output, ptr, rel_base = intcode(program, inputs, ptr, rel_base)
-        direction_index, _ = turn(output, direction_index, directions)
-        position = (position[0] + directions[direction_index][0], position[1] + directions[direction_index][1])
-    print_canvas(canvas)
+    canvas = hull_painting_robot(get_program(raw_input), '#')
     return print_canvas(canvas)
 
 raw_input = read_input()
