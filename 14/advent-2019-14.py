@@ -31,9 +31,10 @@ def read_input():
 def parse(lines):
     recipes = {}
     for line in lines:
-        ingredients, last = {}, None
+        ingredients = {}
+        last = None, None
         for match in PATTERN.finditer(line):
-            if last is not None:
+            if last[0] is not None:
                 key, n = last
                 ingredients[key] = n
             last = match.group(2), int(match.group(1))
