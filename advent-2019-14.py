@@ -1,6 +1,7 @@
-import getopt, sys
-import re
 from collections import defaultdict
+import getopt
+import re
+import sys
 
 PATTERN = re.compile(r'(\d+) (\w+)')
 MAX = 1000000000000

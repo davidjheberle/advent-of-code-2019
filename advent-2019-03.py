@@ -1,4 +1,5 @@
-import getopt, sys
+import getopt
+import sys
 
 fullCmdArguments = sys.argv
 argumentList = fullCmdArguments[1:]

@@ -1,4 +1,5 @@
-import getopt, sys
+import getopt
+import sys
 
 def read_input():
     fullCmdArguments = sys.argv

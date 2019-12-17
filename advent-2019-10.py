@@ -1,5 +1,6 @@
-import getopt, sys
 from math import atan2, hypot, pi
+import getopt
+import sys
 
 def read_input():
     fullCmdArguments = sys.argv

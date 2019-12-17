@@ -1,5 +1,6 @@
-import getopt, sys
-import math
+import getopt
+import intcode
+import sys
 
 def read_input():
     fullCmdArguments = sys.argv
@@ -24,31 +25,25 @@ def read_input():
     file.close()
     return raw_input
 
-def calc_fuel(mass):
-    result = math.floor(mass / 3) - 2
-    return result
-
-def part1(lines):
+def part1(raw_input):
     print("Part 1")
-    sum = 0
-    for l in lines:
-        sum += calc_fuel(int(l))
-    return sum
+    program = intcode.get_program(raw_input)
+    ptr, rel_base, inputs, outputs = 0, 0, [1], []
+    while ptr is not None:
+        output, ptr, rel_base = intcode.run(program, inputs, ptr, rel_base)
+        outputs.append(output)
+    return outputs[0]
 
-def part2(lines):
+def part2(raw_input):
     print("Part 2")
-    sum = 0
-    for l in lines:
-        mass = int(l)
-        while True:
-            result = calc_fuel(mass)
-            if result > 0:
-                sum += result
-                mass = result
-            else:
-                break
-    return sum
+    program = intcode.get_program(raw_input)
+    ptr, rel_base, inputs, outputs = 0, 0, [2], []
+    while ptr is not None:
+        output, ptr, rel_base = intcode.run(program, inputs, ptr, rel_base)
+        outputs.append(output)
+    return outputs[0]
 
 raw_input = read_input()
-print(part1(raw_input.strip().split('\n')))
-print(part2(raw_input.strip().split('\n')))
+print(part1(raw_input))
+print(part2(raw_input))
+
