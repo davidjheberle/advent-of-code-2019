@@ -73,7 +73,6 @@ def explore(program):
 def part1(program):
     print("Part 1")
     oxygen, free = explore(program)
-    print(oxygen)
     return len(path((0, 0), oxygen, free))
 
 def part2(program):
