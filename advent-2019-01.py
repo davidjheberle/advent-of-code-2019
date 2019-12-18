@@ -1,5 +1,4 @@
 import getopt
-import math
 import sys
 
 def read_input():
@@ -26,21 +25,19 @@ def read_input():
     return raw_input
 
 def calc_fuel(mass):
-    result = math.floor(mass / 3) - 2
-    return result
+    return mass // 3 - 2
 
-def part1(lines):
+def part1(masses):
     print("Part 1")
     sum = 0
-    for l in lines:
-        sum += calc_fuel(int(l))
+    for mass in masses:
+        sum += calc_fuel(mass)
     return sum
 
-def part2(lines):
+def part2(masses):
     print("Part 2")
     sum = 0
-    for l in lines:
-        mass = int(l)
+    for mass in masses:
         while True:
             result = calc_fuel(mass)
             if result > 0:
@@ -50,6 +47,6 @@ def part2(lines):
                 break
     return sum
 
-raw_input = read_input()
-print(part1(raw_input.strip().split('\n')))
-print(part2(raw_input.strip().split('\n')))
+lines = list(map(int, read_input().strip().split('\n')))
+print(part1(lines[:]))
+print(part2(lines[:]))
