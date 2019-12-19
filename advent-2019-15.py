@@ -50,15 +50,14 @@ def explore(program):
     oxygen = None
     pending = {(0, 0)}
     pos1 = 0, 0
-    
-    ptr, rel_base, inputs = 0, 0, []
+    inputs = []
 
     while pending:
         target, status = pending.pop(), 1
         visited.add(target)
         for pos2, d in path(pos1, target, free):
             inputs.append(d)
-            status, ptr, rel_base = intcode.run(program, inputs, ptr, rel_base)
+            status = program.run(inputs)
             if status == 0:
                 break
             pos1 = pos2
@@ -81,5 +80,5 @@ def part2(program):
     return max(len(path(oxygen, pos, free)) for pos in free)
 
 raw_input = read_input()
-print(part1(intcode.get_program(raw_input)))
-print(part2(intcode.get_program(raw_input)))
+print(part1(intcode.Computer(raw_input)))
+print(part2(intcode.Computer(raw_input)))

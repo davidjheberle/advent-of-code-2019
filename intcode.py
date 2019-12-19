@@ -1,42 +1,49 @@
-def get_program(raw_input):
-    return list(map(int, raw_input.split(',')))
+class Computer:
 
-def get_params(program, ptr, num, rel_base):
-    params = {}
-    for i in range(1, num + 1):
-        mode = get_memory(program, ptr) // int('100'.ljust(i + 2, '0')) % 10
-        if mode == 0: params[i] = get_memory(program, ptr + i)
-        elif mode == 1: params[i] = ptr + i
-        elif mode == 2: params[i] = rel_base + get_memory(program, ptr + i)
-    return params
+    def __init__(self, raw_input):
+        self.program = self.get_program(raw_input)
+        self.ptr = 0
+        self.rel_base = 0
 
-def buffer_memory(program, index):
-    if index >= len(program):
-        buffer = [0] * (index + 1 - len(program))
-        program.extend(buffer)
+    def get_program(self, raw_input):
+        return list(map(int, raw_input.split(',')))
 
-def get_memory(program, index):
-    buffer_memory(program, index)
-    return program[index]
+    def get_params(self, index, num):
+        params = {}
+        for i in range(1, num + 1):
+            mode = self.get_memory(index) // int('100'.ljust(i + 2, '0')) % 10
+            if mode == 0: params[i] = self.get_memory(index + i)
+            elif mode == 1: params[i] = index + i
+            elif mode == 2: params[i] = self.rel_base + self.get_memory(index + i)
+        return params
 
-def set_memory(program, index, value):
-    buffer_memory(program, index)
-    program[index] = value
+    def buffer_memory(self, index):
+        if index >= len(self.program):
+            buffer = [0] * (index + 1 - len(self.program))
+            self.program.extend(buffer)
 
-def run(program, program_input=[], ptr=0, rel_base=0, input_function=None):
-    if ptr is None: return None, None, None
-    output, params, num_params = 0, {}, (3, 3, 1, 1, 2, 2, 3, 3, 1)
-    while get_memory(program, ptr) != 99:
-        opcode = get_memory(program, ptr) % 100
-        params = get_params(program, ptr, num_params[opcode - 1], rel_base)
-        if opcode == 1: set_memory(program, params[3], get_memory(program, params[1]) + get_memory(program, params[2]))
-        elif opcode == 2: set_memory(program, params[3], get_memory(program, params[1]) * get_memory(program, params[2]))
-        elif opcode == 3: set_memory(program, params[1], program_input.pop(0) if program_input else input_function())
-        elif opcode == 4: output = get_memory(program, params[1])
-        elif opcode == 5 and get_memory(program, params[1]) or opcode == 6 and not get_memory(program, params[1]): ptr = get_memory(program, params[2]) - 3
-        elif opcode == 7: set_memory(program, params[3], 1 if get_memory(program, params[1]) < get_memory(program, params[2]) else 0)
-        elif opcode == 8: set_memory(program, params[3], 1 if get_memory(program, params[1]) == get_memory(program, params[2]) else 0)
-        elif opcode == 9: rel_base += get_memory(program, params[1])
-        ptr += num_params[opcode - 1] + 1
-        if opcode == 4: return output, ptr, rel_base
-    return output, None, None
+    def get_memory(self, index):
+        self.buffer_memory(index)
+        return self.program[index]
+
+    def set_memory(self, index, value):
+        self.buffer_memory(index)
+        self.program[index] = value
+
+    def run(self, program_input=[], input_function=None):
+        if self.ptr is None: return None
+        output, params, num_params = None, {}, (3, 3, 1, 1, 2, 2, 3, 3, 1)
+        while self.get_memory(self.ptr) != 99:
+            opcode = self.get_memory(self.ptr) % 100
+            params = self.get_params(self.ptr, num_params[opcode - 1])
+            if opcode == 1: self.set_memory(params[3], self.get_memory(params[1]) + self.get_memory(params[2]))
+            elif opcode == 2: self.set_memory(params[3], self.get_memory(params[1]) * self.get_memory(params[2]))
+            elif opcode == 3: self.set_memory(params[1], program_input.pop(0) if program_input else input_function())
+            elif opcode == 4: output = self.get_memory(params[1])
+            elif opcode == 5 and self.get_memory(params[1]) or opcode == 6 and not self.get_memory(params[1]): self.ptr = self.get_memory(params[2]) - 3
+            elif opcode == 7: self.set_memory(params[3], 1 if self.get_memory(params[1]) < self.get_memory(params[2]) else 0)
+            elif opcode == 8: self.set_memory(params[3], 1 if self.get_memory(params[1]) == self.get_memory(params[2]) else 0)
+            elif opcode == 9: self.rel_base += self.get_memory(params[1])
+            self.ptr += num_params[opcode - 1] + 1
+            if opcode == 4: return output
+        return output

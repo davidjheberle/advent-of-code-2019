@@ -29,11 +29,11 @@ def read_input():
 def part1(program):
     print("Part 1")
     block_count = 0
-    ptr, rel_base, inputs = 0, 0, []
-    while ptr is not None:
-        _, ptr, rel_base = intcode.run(program, inputs, ptr, rel_base)
-        _, ptr, rel_base = intcode.run(program, inputs, ptr, rel_base)
-        tile_id, ptr, rel_base = intcode.run(program, inputs, ptr, rel_base)
+    inputs, tile_id = [], 0
+    while tile_id is not None:
+        program.run(inputs)
+        program.run(inputs)
+        tile_id = program.run(inputs)
         if tile_id == 2: block_count += 1
     return block_count
 
@@ -41,19 +41,19 @@ def part2(program):
     print("Part 2")
     ball_x = paddle_x = 0
     score = 0
-    intcode.set_memory(program, 0, 2)
-    ptr, rel_base, inputs = 0, 0, []
+    program.set_memory(0, 2)
+    inputs, tile_id = [], 0
     joystick_input = lambda: (ball_x > paddle_x) - (ball_x < paddle_x)
-    while ptr is not None:
-        x, ptr, rel_base = intcode.run(program, inputs, ptr, rel_base, joystick_input)
-        y, ptr, rel_base = intcode.run(program, inputs, ptr, rel_base, joystick_input)
-        tile_id, ptr, rel_base = intcode.run(program, inputs, ptr, rel_base, joystick_input)
-        if ptr is not None:
+    while tile_id is not None:
+        x = program.run(inputs, joystick_input)
+        y = program.run(inputs, joystick_input)
+        tile_id = program.run(inputs, joystick_input)
+        if tile_id is not None:
             paddle_x = x if tile_id == 3 else paddle_x
             ball_x = x if tile_id == 4 else ball_x
             score = tile_id if (x, y) == (-1, 0) else score
     return score
 
 raw_input = read_input()
-print(part1(intcode.get_program(raw_input)))
-print(part2(intcode.get_program(raw_input)))
+print(part1(intcode.Computer(raw_input)))
+print(part2(intcode.Computer(raw_input)))

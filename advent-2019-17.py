@@ -38,9 +38,10 @@ def is_grid_char(num):
 def get_grid(program):
     grid = {}
     x, y, width, height = 0, 0, 0, 0
-    ptr, rel_base, inputs = 0, 0, []
-    output, ptr, rel_base = intcode.run(program, inputs, ptr, rel_base)
-    while ptr is not None:
+    inputs, output = [], 0
+    while output is not None:
+        output = program.run(inputs)
+        if output is None: break
         if not is_grid_char(output):
             break
         if output == 10:
@@ -50,7 +51,6 @@ def get_grid(program):
         else:
             grid[(x, y)] = output
             x += 1
-        output, ptr, rel_base = intcode.run(program, inputs, ptr, rel_base)
     height = y - 1
     return grid, width, height
 
@@ -79,19 +79,19 @@ def get_collected_dust(program):
                                          'L,12,L,12,R,8,R,8\n'
                                          'R,10,R,4,R,4\n'
                                          'n\n')
-    ptr, rel_base, outputs = 0, 0, []
-    while ptr is not None:
-        output, ptr, rel_base = intcode.run(program, input_routine, ptr, rel_base)
-        if ptr is not None: outputs.append(output)
+    outputs, output = [], 0
+    while output is not None:
+        output = program.run(input_routine)
+        if output is not None: outputs.append(output)
     return outputs[-1]
 
 def part2(program):
     print("Part 2")
-    intcode.set_memory(program, 0, 2)
-    grid, width, height = get_grid(program[:])
+    program.set_memory(0, 2)
+    grid, width, height = get_grid(program)
     print(serialize_grid(grid, width, height))
     return get_collected_dust(program)
 
-program = intcode.get_program(read_input())
-print(part1(program[:]))
-print(part2(program[:]))
+raw_input = read_input()
+print(part1(intcode.Computer(raw_input)))
+print(part2(intcode.Computer(raw_input)))

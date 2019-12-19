@@ -27,18 +27,17 @@ def read_input():
 
 def part1(raw_input):
     print("Part 1")
-    program = intcode.get_program(raw_input)
-    program_input, ptr, output, last_output = [1], 0, None, None
-    while ptr is not None:
-        last_output = output
-        output, ptr = intcode.run(program, program_input, ptr)
-        print((output, ptr))
-    return last_output
+    program = intcode.Computer(raw_input)
+    outputs, output = [], 0
+    while output is not None:
+        output = program.run([1])
+        if output is not None: outputs.append(output)
+    return outputs[-1]
 
 def part2(raw_input):
     print("Part 2")
-    program = intcode.get_program(raw_input)
-    return intcode.run(program, [5])[0]
+    program = intcode.Computer(raw_input)
+    return program.run([5])
 
 raw_input = read_input()
 print(part1(raw_input))
