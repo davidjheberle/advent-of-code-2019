@@ -1,26 +1,4 @@
-import getopt
-import sys
-
-fullCmdArguments = sys.argv
-argumentList = fullCmdArguments[1:]
-unixOptions = "f:"
-gnuOptions = "file="
-
-try:
-    arguments, _ = getopt.getopt(argumentList, unixOptions, gnuOptions)
-except getopt.error as err:
-    print(str(err))
-    sys.exit(2)
-
-fileName = None
-for currentArgument, currentValue in arguments:
-    if currentArgument in ("-f", "--file"):
-        fileName = currentValue
-        print("Reading %s" % fileName)
-
-file = open(fileName)
-raw_input = file.read()
-file.close()
+import utils
 
 def traverse_wire(wire):
     directions = {'D': [0, -1], 'U': [0, 1], 'L': [-1, 0], 'R': [1, 0]}
@@ -53,7 +31,7 @@ def part2(intersections, wires):
     steps = wires[0][fewest_steps] + wires[1][fewest_steps]
     return steps
 
-wires = get_wires(raw_input)
+wires = get_wires(utils.read_input())
 intersections = get_intersections(wires)
 print(part1(intersections))
 print(part2(intersections, wires))

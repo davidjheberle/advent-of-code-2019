@@ -1,28 +1,4 @@
-import getopt
-import sys
-
-def read_input():
-    fullCmdArguments = sys.argv
-    argumentList = fullCmdArguments[1:]
-    unixOptions = "f:"
-    gnuOptions = "file="
-
-    try:
-        arguments, _ = getopt.getopt(argumentList, unixOptions, gnuOptions)
-    except getopt.error as err:
-        print(str(err))
-        sys.exit(2)
-
-    fileName = None
-    for currentArgument, currentValue in arguments:
-        if currentArgument in ("-f", "--file"):
-            fileName = currentValue
-            print("Reading %s" % fileName)
-
-    file = open(fileName)
-    raw_input = file.read()
-    file.close()
-    return raw_input
+import utils
 
 def intersection(lst1, lst2):
     return [value for value in lst1 if value in lst2]
@@ -41,7 +17,7 @@ def get_orbit(body, orbit_map):
         orbit.append(body)
     return orbit
 
-def part1(input):
+def part1(raw_input):
     print("Part 1")
     orbit_map = map_orbits(raw_input.strip().split('\n'))
     count = 0
@@ -52,7 +28,7 @@ def part1(input):
             count += 1
     return count
 
-def part2(input):
+def part2(raw_input):
     print("Part 2")
     orbit_map = map_orbits(raw_input.strip().split('\n'))
     orbit_you = get_orbit('YOU', orbit_map)
@@ -60,7 +36,7 @@ def part2(input):
     orbit_common = intersection(orbit_you, orbit_san)
     return len(orbit_you) + len(orbit_san) - 2 * len(orbit_common)
 
-raw_input = read_input() 
+raw_input = utils.read_input() 
 print(part1(raw_input))
 print(part2(raw_input))
 

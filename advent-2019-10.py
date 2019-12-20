@@ -1,29 +1,5 @@
 from math import atan2, hypot, pi
-import getopt
-import sys
-
-def read_input():
-    fullCmdArguments = sys.argv
-    argumentList = fullCmdArguments[1:]
-    unixOptions = "f:"
-    gnuOptions = "file="
-
-    try:
-        arguments, _ = getopt.getopt(argumentList, unixOptions, gnuOptions)
-    except getopt.error as err:
-        print(str(err))
-        sys.exit(2)
-
-    fileName = None
-    for currentArgument, currentValue in arguments:
-        if currentArgument in ("-f", "--file"):
-            fileName = currentValue
-            print("Reading %s" % fileName)
-
-    file = open(fileName)
-    raw_input = file.read()
-    file.close()
-    return raw_input
+import utils
 
 def get_asteroid_map(raw_input):
     lines = raw_input.splitlines()
@@ -51,6 +27,6 @@ def part2(asteroids):
     x, y = sorted(asteroids, key=lambda b: (ranks[b], angle(a, b)))[199]
     return x * 100 + y
 
-asteroids = get_asteroid_map(read_input())
+asteroids = get_asteroid_map(utils.read_input())
 print(part1(asteroids))
 print(part2(asteroids))

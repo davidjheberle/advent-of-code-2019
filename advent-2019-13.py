@@ -1,30 +1,6 @@
-import getopt
 import intcode
 import os
-import sys
-
-def read_input():
-    fullCmdArguments = sys.argv
-    argumentList = fullCmdArguments[1:]
-    unixOptions = "f:"
-    gnuOptions = "file="
-
-    try:
-        arguments, _ = getopt.getopt(argumentList, unixOptions, gnuOptions)
-    except getopt.error as err:
-        print(str(err))
-        sys.exit(2)
-
-    fileName = None
-    for currentArgument, currentValue in arguments:
-        if currentArgument in ("-f", "--file"):
-            fileName = currentValue
-            print("Reading %s" % fileName)
-
-    file = open(fileName)
-    raw_input = file.read()
-    file.close()
-    return raw_input
+import utils
 
 def part1(program):
     print("Part 1")
@@ -54,6 +30,6 @@ def part2(program):
             score = tile_id if (x, y) == (-1, 0) else score
     return score
 
-raw_input = read_input()
+raw_input = utils.read_input()
 print(part1(intcode.Computer(raw_input)))
 print(part2(intcode.Computer(raw_input)))

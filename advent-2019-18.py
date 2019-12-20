@@ -1,30 +1,6 @@
 from collections import defaultdict
 from itertools import count
-import getopt
-import sys
-
-def read_input():
-    fullCmdArguments = sys.argv
-    argumentList = fullCmdArguments[1:]
-    unixOptions = "f:"
-    gnuOptions = "file="
-
-    try:
-        arguments, _ = getopt.getopt(argumentList, unixOptions, gnuOptions)
-    except getopt.error as err:
-        print(str(err))
-        sys.exit(2)
-
-    fileName = None
-    for currentArgument, currentValue in arguments:
-        if currentArgument in ("-f", "--file"):
-            fileName = currentValue
-            print("Reading %s" % fileName)
-
-    file = open(fileName)
-    raw_input = file.read()
-    file.close()
-    return raw_input
+import utils
 
 def parse_input(raw_input):
     maze = {}
@@ -121,6 +97,6 @@ def part2(raw_input):
         return shortest
     return walk({'1', '2', '3', '4'}, all_keys)
 
-raw_input = read_input()
+raw_input = utils.read_input()
 print(part1(raw_input))
 print(part2(raw_input))

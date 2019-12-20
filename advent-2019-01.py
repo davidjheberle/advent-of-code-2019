@@ -1,28 +1,4 @@
-import getopt
-import sys
-
-def read_input():
-    fullCmdArguments = sys.argv
-    argumentList = fullCmdArguments[1:]
-    unixOptions = "f:"
-    gnuOptions = "file="
-
-    try:
-        arguments, _ = getopt.getopt(argumentList, unixOptions, gnuOptions)
-    except getopt.error as err:
-        print(str(err))
-        sys.exit(2)
-
-    fileName = None
-    for currentArgument, currentValue in arguments:
-        if currentArgument in ("-f", "--file"):
-            fileName = currentValue
-            print("Reading %s" % fileName)
-
-    file = open(fileName)
-    raw_input = file.read()
-    file.close()
-    return raw_input
+import utils
 
 def calc_fuel(mass):
     return mass // 3 - 2
@@ -47,6 +23,6 @@ def part2(masses):
                 break
     return sum
 
-lines = list(map(int, read_input().strip().split('\n')))
+lines = list(map(int, utils.read_input().strip().split('\n')))
 print(part1(lines[:]))
 print(part2(lines[:]))

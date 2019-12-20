@@ -1,32 +1,7 @@
-import getopt, sys
 import functools
 import itertools
 import math
-
-def read_input():
-    fullCmdArguments = sys.argv
-    argumentList = fullCmdArguments[1:]
-    unixOptions = "f:s:"
-    gnuOptions = "file=steps="
-
-    try:
-        arguments, _ = getopt.getopt(argumentList, unixOptions, gnuOptions)
-    except getopt.error as err:
-        print(str(err))
-        sys.exit(2)
-
-    fileName, steps = None, None
-    for currentArgument, currentValue in arguments:
-        if currentArgument in ("-f", "--file"):
-            fileName = currentValue
-            print("Reading %s" % fileName)
-        elif currentArgument in ("-s", "--steps"):
-            steps = int(currentValue)
-
-    file = open(fileName)
-    raw_input = file.read()
-    file.close()
-    return raw_input, steps
+import utils
 
 class Body:
     def __init__(self, p, v):
@@ -115,6 +90,6 @@ def part2(raw_input):
                 peroid[axis] = steps
     return functools.reduce(lcm, peroid.values())
 
-raw_input, steps = read_input()
-print(part1(raw_input, steps))
+raw_input = utils.read_input()
+print(part1(raw_input, 1000))
 print(part2(raw_input))

@@ -1,28 +1,4 @@
-import getopt
-import sys
-
-def read_input():
-    fullCmdArguments = sys.argv
-    argumentList = fullCmdArguments[1:]
-    unixOptions = "f:"
-    gnuOptions = "file="
-
-    try:
-        arguments, _ = getopt.getopt(argumentList, unixOptions, gnuOptions)
-    except getopt.error as err:
-        print(str(err))
-        sys.exit(2)
-
-    fileName = None
-    for currentArgument, currentValue in arguments:
-        if currentArgument in ("-f", "--file"):
-            fileName = currentValue
-            print("Reading %s" % fileName)
-
-    file = open(fileName)
-    raw_input = file.read()
-    file.close()
-    return raw_input
+import utils
 
 def get_multiplier(position, offset):
     base_pattern = [0, 1, 0, -1]
@@ -48,6 +24,6 @@ def part2(data):
             data[i] = suffix_sum = (suffix_sum + data[i]) % 10
     return ''.join(map(str, data[:8]))
 
-data = list(map(int, read_input().strip()))
+data = list(map(int, utils.read_input().strip()))
 print(part1(data[:]))
 print(part2(data[:]))
