@@ -2,8 +2,11 @@ import intcode
 import utils
 
 def check(raw_input, x, y):
-    program = intcode.Computer(raw_input)
-    return program.run([x, y])
+    computer = intcode.Computer(raw_input)
+    computer.generator = computer.run()
+    computer.generator.send(None)
+    computer.generator.send(x)
+    return computer.generator.send(y)
 
 def part1(raw_input):
     print("Part 1")

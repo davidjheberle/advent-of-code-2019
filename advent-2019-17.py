@@ -7,22 +7,14 @@ def is_intersection(grid, x, y, width, height):
     return grid[(x - 1, y)] == ord('#') and grid[(x + 1, y)] == ord('#') \
         and grid[(x, y - 1)] == ord('#') and grid[(x, y + 1)] == ord('#')
 
-def is_grid_char(num):
-    chars = set('#.^v<>')
-    return str(chr(num)) in chars or num == 10
-
-def get_grid(program):
-    grid = {}
+def get_grid(computer):
+    grid, output = {}, 0
     x, y, width, height = 0, 0, 0, 0
-    inputs, output = [], 0
-    while output is not None:
-        output = program.run(inputs)
-        if output is None: break
-        if not is_grid_char(output):
-            break
+    while output := next(computer.generator):
         if output == 10:
             y += 1
             width = max(width, x)
+            if x == 0: break
             x = 0
         else:
             grid[(x, y)] = output
@@ -38,35 +30,40 @@ def get_alignment_param_sum(grid, width, height):
                 alignment_param_sum += x * y
     return alignment_param_sum
 
-def serialize_grid(grid, width, height):
-    return '\n'.join([''.join(map(chr, [grid[(x, y)] for x in range(0, width)])) for y in range(0, height)])
-
-def part1(program):
+def part1(computer):
     print("Part 1")
-    grid, width, height = get_grid(program)
+    computer.generator = computer.run()
+    grid, width, height = get_grid(computer)
     return get_alignment_param_sum(grid, width, height)
 
-def string_to_ascii_list(string):
-    return list(map(ord, list(string)))
+def get_collected_dust(computer):
+    program = [
+        'A,A,B,C,B,C,B,C,C,A\n',
+        'R,8,L,4,R,4,R,10,R,8\n',
+        'L,12,L,12,R,8,R,8\n',
+        'R,10,R,4,R,4\n',
+        'n\n'
+    ]
 
-def get_collected_dust(program):
-    input_routine = string_to_ascii_list('A,A,B,C,B,C,B,C,C,A\n'
-                                         'R,8,L,4,R,4,R,10,R,8\n'
-                                         'L,12,L,12,R,8,R,8\n'
-                                         'R,10,R,4,R,4\n'
-                                         'n\n')
-    outputs, output = [], 0
-    while output is not None:
-        output = program.run(input_routine)
-        if output is not None: outputs.append(output)
-    return outputs[-1]
+    while output := next(computer.generator):
+        print(chr(output), end='', sep='')
+    
+    for line in program:
+        for instruction in line:
+            output = computer.generator.send(ord(instruction))
+            print(instruction, end='')
+            if output: print(chr(output), end='')
+        while output := next(computer.generator):
+            if output and chr(output).isascii():
+                print(chr(output), end='')
+            else:
+                return output
 
-def part2(program):
+def part2(computer):
     print("Part 2")
-    program.set_memory(0, 2)
-    grid, width, height = get_grid(program)
-    print(serialize_grid(grid, width, height))
-    return get_collected_dust(program)
+    computer.set_memory(0, 2)
+    computer.generator = computer.run()
+    return get_collected_dust(computer)
 
 raw_input = utils.read_input()
 print(part1(intcode.Computer(raw_input)))

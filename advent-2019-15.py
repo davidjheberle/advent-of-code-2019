@@ -20,20 +20,21 @@ def path(src, dst, free):
             queue.append((pos2, path + [(pos2, d)]))
             seen.add(pos2)
 
-def explore(program):
+def explore(computer):
     visited = set()
     free = set()
     oxygen = None
     pending = {(0, 0)}
     pos1 = 0, 0
-    inputs = []
 
+    computer.generator = computer.run()
+    computer.generator.send(None)
     while pending:
         target, status = pending.pop(), 1
         visited.add(target)
         for pos2, d in path(pos1, target, free):
-            inputs.append(d)
-            status = program.run(inputs)
+            status = computer.generator.send(d)
+            next(computer.generator)
             if status == 0:
                 break
             pos1 = pos2
@@ -45,14 +46,14 @@ def explore(program):
 
     return oxygen, free
 
-def part1(program):
+def part1(computer):
     print("Part 1")
-    oxygen, free = explore(program)
+    oxygen, free = explore(computer)
     return len(path((0, 0), oxygen, free))
 
-def part2(program):
+def part2(computer):
     print("Part 2")
-    oxygen, free = explore(program)
+    oxygen, free = explore(computer)
     return max(len(path(oxygen, pos, free)) for pos in free)
 
 raw_input = utils.read_input()

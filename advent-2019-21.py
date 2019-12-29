@@ -1,64 +1,64 @@
 import intcode
 import utils
 
-def run_springscript(program):
-    ascii_image = []
-    while True:
-        ascii_int = program.run()
-        if ascii_int is None:
-            break
-        if ascii_int > 127:  # ascii table size
-            return ascii_int, ''
-        ascii_image.append(chr(ascii_int))
-    return -1, ''.join(ascii_image)
+def run_springscript(computer):
+    try:
+        while output := next(computer.generator):
+            if output and output < 256:
+                print(chr(output), end='')
+            else:
+                print(output)
+    except StopIteration:
+        return output
 
+def load_springscript(computer, script):
+    computer.generator = computer.run()
+    while output := next(computer.generator):
+        print(chr(output), end='', sep='')
+    print()
+    
+    for line in script:
+        for letter in line:
+            output = computer.generator.send(ord(letter))
+            print(letter, end='')
+            if output:
+                print(chr(output))
 
-def load_springscript(program, script):
-    ascii_chars = list(map(ord, list('\n'.join(script) + '\n')))
-    while len(ascii_chars) > 0:
-        program.run(ascii_chars)
+def get_hull_damage(computer, script):
+    load_springscript(computer, script)
+    return run_springscript(computer)
 
-
-def get_hull_damage(program, script):
-    load_springscript(program, script)
-    damage, ascii_images = run_springscript(program)
-    if ascii_images:
-        print(ascii_images)
-    return damage
-
-
-def part1(program):
+def part1(computer):
     print("Part 1")
     # (!A or !B or !C) and D
     script = [
-        'NOT A T',
-        'NOT B J',
-        'OR T J',
-        'NOT C T',
-        'OR T J',
-        'AND D J',
-        'WALK']
-    return get_hull_damage(program, script)
+        'NOT A T\n',
+        'NOT B J\n',
+        'OR T J\n',
+        'NOT C T\n',
+        'OR T J\n',
+        'AND D J\n',
+        'WALK\n']
+    get_hull_damage(computer, script)
 
-
-def part2(program):
+def part2(computer):
     print("Part 2")
+    # (!A or !B or !C) and D and (E or H)
+    # Inferred experimentally by inspecting the failed scenarios
     script = [
-        # (!A or !B or !C) and D and (E or H)
-        # Inferred experimentally by inspecting the failed scenarios
-        'NOT A T',
-        'NOT B J',
-        'OR T J',
-        'NOT C T',
-        'OR T J',
-        'AND D J',
-        'NOT E T',
-        'NOT T T',
-        'OR H T',
-        'AND T J',
-        'RUN']
-    return get_hull_damage(program, script)
+        'NOT A J\n',
+        'AND D J\n',
+        'NOT B T\n',
+        'AND D T\n',
+        'OR T J\n',
+        'NOT C T\n',
+        'AND D T\n',
+        'AND H T\n',
+        'OR T J\n',
+        'RUN\n'
+    ]
+    get_hull_damage(computer, script)
 
 raw_input = utils.read_input()
-print(part1(intcode.Computer(raw_input)))
-print(part2(intcode.Computer(raw_input)))
+part1(intcode.Computer(raw_input))
+part2(intcode.Computer(raw_input))

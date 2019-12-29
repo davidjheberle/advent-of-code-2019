@@ -4,36 +4,44 @@ import utils
 
 def part1(raw_input):
     print("Part 1")
+    maximum = float('-inf')
     phase_permutations = itertools.permutations(range(5), 5)
-    outputs = []
     for phase_settings in phase_permutations:
         num_amplifiers = len(phase_settings)
-        inputs, output = [], 0
+        output = 0
         for i in range(num_amplifiers):
-            program = intcode.Computer(raw_input)
-            inputs.append([phase_settings[i], output])
-            output = program.run(inputs[i])
-        outputs.append(output)
-        print((phase_settings, output))
-    return max(outputs)
+            computer = intcode.Computer(raw_input)
+            computer.generator = computer.run()
+            computer.generator.send(None)
+            computer.generator.send(phase_settings[i])
+            output = computer.generator.send(output)
+        maximum = max(maximum, output)
+    return maximum
 
 def part2(raw_input):
     print("Part 2")
+    maximum = float('-inf')
     phase_permutations = itertools.permutations(range(5, 10), 5)
-    outputs = []
     for phase_settings in phase_permutations:
-        programs, inputs, output = [], [], 0
+        computers = []
         num_amplifiers = len(phase_settings)
+        outputs = [0] * num_amplifiers
         for i in range(num_amplifiers):
-            programs.append(intcode.Computer(raw_input))
-            inputs.append([phase_settings[i]])            
-        while output is not None:
+            computers.append(intcode.Computer(raw_input))
+            computers[i].generator = computers[i].run()
+            computers[i].generator.send(None)
+            computers[i].generator.send(phase_settings[i])
+        flag = True
+        while flag:
             for i in range(num_amplifiers):
-                inputs[i].append(output)
-                output = programs[i].run(inputs[i])
-        print((phase_settings, inputs[0][0]))
-        outputs.append(inputs[0][0])
-    return max(outputs)
+                try:
+                    outputs[i] = computers[i].generator.send(outputs[(i - 1) % 5])
+                    next(computers[i].generator)
+                except StopIteration:
+                    flag = False
+                    continue
+        maximum = max(maximum, outputs[-1])
+    return maximum
 
 raw_input = utils.read_input()
 print(part1(raw_input))

@@ -22,18 +22,21 @@ def turn(input, index, directions):
         index = 0
     return index, directions[index]
 
-def hull_painting_robot(program, start_color):
+def hull_painting_robot(computer, start_color):
     canvas, position, directions, direction_index = {}, (0, 0), [(0, 1), (1, 0), (0, -1), (-1, 0)], 0
     canvas[position] = start_color
-    inputs, output = [], 0
-    while output is not None:
-        inputs.append(read_panel(position, canvas))
-        output = program.run(inputs)
-        if output is None: break
-        paint_panel(output, position, canvas)
-        output = program.run(inputs)
-        direction_index, _ = turn(output, direction_index, directions)
-        position = (position[0] + directions[direction_index][0], position[1] + directions[direction_index][1])
+    computer.generator = computer.run()
+    computer.generator.send(None)
+    while True:
+        try:
+            color = computer.generator.send(read_panel(position, canvas))
+            paint_panel(color, position, canvas)
+            direction = next(computer.generator)
+            next(computer.generator)
+            direction_index, _ = turn(direction, direction_index, directions)
+            position = (position[0] + directions[direction_index][0], position[1] + directions[direction_index][1])
+        except StopIteration:
+            break
     return canvas
 
 def print_canvas(canvas):

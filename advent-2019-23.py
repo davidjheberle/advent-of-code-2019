@@ -10,15 +10,17 @@ def part1(raw_input):
     for i in range(network_size):
         input_queues[i].append(i)
         computers.append(intcode.Computer(raw_input))
+        computers[i].generator = computers[i].run()
+        computers[i].generator.send(None)
     
     while True:
         for i in range(network_size):
             network_input = input_queues[i].popleft() if input_queues[i] else -1
-            output = computers[i].cor.send(network_input)
+            output = computers[i].generator.send(network_input)
             if output:
-                tmp = next(computers[i].cor)
+                tmp = next(computers[i].generator)
                 input_queues[output].append(tmp)
-                tmp = next(computers[i].cor)
+                tmp = next(computers[i].generator)
                 if output == 255:
                     return tmp
                 input_queues[output].append(tmp)

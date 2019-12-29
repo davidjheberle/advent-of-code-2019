@@ -4,8 +4,7 @@ class Computer:
         self.program = self.get_program(raw_input)
         self.ptr = 0
         self.rel_base = 0
-        self.cor = self.run()
-        self.first_val = self.cor.send(None)
+        self.generator = None
 
     def get_program(self, raw_input):
         return list(map(int, raw_input.split(',')))
@@ -32,8 +31,7 @@ class Computer:
         self.buffer_memory(index)
         self.program[index] = value
 
-    def run(self, program_input=[], input_function=None):
-        # if self.ptr is None: return None
+    def run(self, input_function=None):
         params, num_params = {}, (3, 3, 1, 1, 2, 2, 3, 3, 1)
         while self.get_memory(self.ptr) != 99:
             opcode = self.get_memory(self.ptr) % 100
@@ -41,9 +39,8 @@ class Computer:
             if opcode == 1: self.set_memory(params[3], self.get_memory(params[1]) + self.get_memory(params[2]))
             elif opcode == 2: self.set_memory(params[3], self.get_memory(params[1]) * self.get_memory(params[2]))
             elif opcode == 3:
-                tmp = yield
-                # self.set_memory(params[1], program_input.pop(0) if program_input else input_function())
-                self.set_memory(params[1], tmp)
+                if input_function: self.set_memory(params[1], input_function())
+                else: computer_input = yield; self.set_memory(params[1], computer_input)
             elif opcode == 4: yield self.get_memory(params[1])
             elif opcode == 5 and self.get_memory(params[1]) or opcode == 6 and not self.get_memory(params[1]): self.ptr = self.get_memory(params[2]) - 3
             elif opcode == 7: self.set_memory(params[3], 1 if self.get_memory(params[1]) < self.get_memory(params[2]) else 0)
